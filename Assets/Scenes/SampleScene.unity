@@ -258,7 +258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 45e99977dabaf984bac1d4c69cf3642c, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45e99977dabaf984bac1d4c69cf3642c, type: 3}
@@ -593,10 +593,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 60a46cb32cf181c4d86dde1fdf114d17, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60a46cb32cf181c4d86dde1fdf114d17, type: 3}
+--- !u!1 &1571305584 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 45e99977dabaf984bac1d4c69cf3642c, type: 3}
+  m_PrefabInstance: {fileID: 668485916}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1705830272 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 60a46cb32cf181c4d86dde1fdf114d17, type: 3}
+  m_PrefabInstance: {fileID: 1091297761}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2037405657
 GameObject:
   m_ObjectHideFlags: 0
@@ -708,6 +718,10 @@ MonoBehaviour:
   bButton: {fileID: 1523644558780781199, guid: c8dfdfba665e93b4a9f08600e55f66a1, type: 3}
   xButton: {fileID: 3403484631570774278, guid: 6f8d71f75b493974ea7a676ad68ce915, type: 3}
   yButton: {fileID: 5289949736886434459, guid: 97b6b437df0a537488cd440d9b788dce, type: 3}
+  leftButton: {fileID: 2549555268570949512, guid: 61e9fe4b2ac83cc41ad8d40aa33541a7, type: 3}
+  rightButton: {fileID: 615467234533619716, guid: c4de4f5c959b71840b05879c49693879, type: 3}
+  upButton: {fileID: 6647190733504040010, guid: ffbd2bb8e94794740bdc1ec0ad119089, type: 3}
+  downButton: {fileID: 2423767498480807726, guid: 6ef75d8ad6136424aae9f58d5d43e878, type: 3}
 --- !u!4 &2075659425
 Transform:
   m_ObjectHideFlags: 0
@@ -768,10 +782,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   response: 
   text: {fileID: 4900000, guid: 344c8e18115a54e44b30a30bfd181a16, type: 3}
+  nameSongs: []
   comboFile: {fileID: 4900000, guid: 9b9ff4c814aefed46b18c359ce82630b, type: 3}
   combos: {fileID: 0}
+  instrument: piano
   isReady: 0
   setInstruction: 0
+  guitar: {fileID: 1571305584}
+  piano: {fileID: 1705830272}
 --- !u!82 &2142418480
 AudioSource:
   m_ObjectHideFlags: 0

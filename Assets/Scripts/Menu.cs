@@ -8,6 +8,7 @@ public class Menu : MonoBehaviour
     public GameObject handler;
     public GameObject generalPanel, individualButtonPanel;
     public GameObject aButton, bButton, xButton, yButton;
+    public GameObject leftButton, rightButton, upButton, downButton;
 
     private GameObject newPanel;
     
@@ -15,9 +16,12 @@ public class Menu : MonoBehaviour
     private Chords _Chords;
 
     private Transform transform;
+
+    private GameObject [] buttons ;
     // Start is called before the first frame update
     void Start()
     {
+        buttons = new GameObject [3];
         _Chords =  handler.GetComponent<Chords>( );
         
         StartCoroutine(WaitToStart());
@@ -39,6 +43,12 @@ public class Menu : MonoBehaviour
         if ( buttonName == "B" ) return bButton;
         if ( buttonName == "X" ) return xButton;
         if ( buttonName == "Y" ) return yButton;
+
+        if ( buttonName == "UP" ) return upButton;
+        if ( buttonName == "DOWN" ) return downButton;
+        if ( buttonName == "LEFT" ) return leftButton;
+        if ( buttonName == "RIGHT" ) return rightButton;
+        
         return null;
     }
 
@@ -47,7 +57,6 @@ public class Menu : MonoBehaviour
     */
     void changeTextInstruction( GameObject panel){
             GameObject child = panel.transform.GetChild(0).gameObject;
-            Debug.Log(_Combo.actualCombo.name);
             child.GetComponent<Text>().text = _Combo.actualCombo.name;
     }
 
@@ -55,10 +64,15 @@ public class Menu : MonoBehaviour
     void createInstructions( ){
         if ( newPanel != null){
             Destroy (newPanel);
+            for (int sequenceIdx = 0; sequenceIdx < buttons.Length; sequenceIdx++){
+                Destroy( buttons[sequenceIdx] );
+            }
         }
-        List<combo> _ComboData = _Combo.actualCombo.combo;
-        Debug.Log(_ComboData.Count );
-        newPanel = Instantiate ( individualButtonPanel, new Vector3(transform.position.x,transform.position.y, transform.position.z), Quaternion.identity, transform.parent );
+        Debug.Log( _Chords.instrument );
+        List<combo> _ComboData = _Combo.actualCombo.combo[_Chords.instrument];
+        
+        newPanel = Instantiate ( individualButtonPanel, 
+        new Vector3(transform.position.x,transform.position.y, transform.position.z), Quaternion.identity, transform.parent );
         Vector3 panelGroupPos = newPanel.transform.position;
         panelGroupPos += new Vector3(0.0f, 225.0f, 0.0f);
         newPanel.transform.position = panelGroupPos;
@@ -67,10 +81,11 @@ public class Menu : MonoBehaviour
             
             GameObject imageBtn = selectImage( _ComboData[sequenceIdx].ToString( ) );
             Transform trans = newPanel.transform;
-            GameObject img = Instantiate( imageBtn, new Vector3(trans.position.x, trans.position.y, trans.position.z ), Quaternion.identity, trans.parent);
-            Vector3 imgPos = img.transform.position;
+            buttons[sequenceIdx] = Instantiate( imageBtn, 
+            new Vector3(trans.position.x, trans.position.y, trans.position.z ), Quaternion.identity, trans.parent);
+            Vector3 imgPos = buttons[sequenceIdx] .transform.position;
             imgPos += new Vector3(-250.0f + 150.0f*sequenceIdx, 0.0f, 0.0f);
-            img.transform.position = imgPos;
+            buttons[sequenceIdx] .transform.position = imgPos;
         }
          _Chords.isReady = false;
          _Chords.setInstruction = true;

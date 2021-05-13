@@ -1,72 +1,102 @@
 {
-    "piano": {
-
-    },
-    "guitar" : [
+    "chords" : [
         {
             "chord": "Em",
-            "combo": [
+            "guitar": [
                 "X", "Y", "Y"
+            ],
+            "piano": [
+                "LEFT", "UP", "UP"
             ]
         },
         {
             "chord": "C",
-            "combo": [
+            "guitar": [
                 "Y", "A", "Y"
+            ],
+            "piano": [
+                "UP", "DOWN", "UP"
             ]
         },
         {
             "chord": "B",
-            "combo": [
+            "guitar": [
                 "X", "X", "Y"
+            ],
+            "piano": [
+                "LEFT", "LEFT", "UP"
             ]
         },
         {
             "chord": "Am",
-            "combo": [
+            "guitar": [
                 "A", "X", "Y"
+            ],
+            "piano": [
+                "DOWN", "LEFT", "UP"
             ]
         },
         {
             "chord": "G/B",
-            "combo": [
+            "guitar": [
                 "B", "B", "Y"
+            ],
+            "piano": [
+                "RIGHT", "RIGHT", "UP"
             ]
         },
         {
             "chord": "D",
-            "combo": [
+            "guitar": [
                 "B", "Y", "A"
+            ],
+            "piano": [
+                "RIGHT", "UP", "DOWN"
             ]
         },
         {
             "chord": "A",
-            "combo": [
+            "guitar": [
                 "B", "B", "Y"
+            ],
+            "piano": [
+                "RIGHT", "RIGHT", "UP"
             ]
         },
         {
             "chord": "D#dim7",
-            "combo": [
+            "guitar": [
                 "A", "A", "Y"
+            ],
+            "piano": [
+                "DOWN", "DOWN", "UP"
             ]
         },
         {
             "chord": "G",
-            "combo": [
+            "guitar": [
                 "X", "A", "A"
+            ],
+            "piano": [
+                "LEFT", "DOWN", "DOWN"
             ]
         },
         {
             "chord": "F",
-            "combo": [
+            "guitar": [
                 "A", "A", "B"
+            ],
+            "piano": [
+                "DOWN", "DOWN", "RIGHT"
             ]
         },
         {
             "chord": "E",
-            "combo": [
+            "guitar": [
                 "A", "A", "X"
+            ],
+            "piano": [
+                "DOWN", "DOWN", "LEFT"
             ]
         }
     ]

@@ -8,8 +8,14 @@ public enum combo{
         A,
         B,
         X,
-        Y
+        Y,
+        LEFT, 
+        RIGHT,
+        DOWN, 
+        UP
     }
+
+
 public class Combo : MonoBehaviour
 {
     public Dictionary<string, ComboSystem> comboSystems;
@@ -47,20 +53,15 @@ public class Combo : MonoBehaviour
         KeyCode.JoystickButton19
     };
 
+    public KeyCode []  KeyBoardKeyCodes =  new KeyCode [] {
+        KeyCode.DownArrow,
+        KeyCode.UpArrow,
+        KeyCode.RightArrow,
+        KeyCode.LeftArrow
+    };
+
     // Update is called once per frame
     void Update( ) {
-        if ( isCreated ){
-            
-        }
-
-            /*for (int index = 0; index < KeyCodes.Length; index++) {
-                KeyCode kcode = KeyCodes[index];
-                if (Input.GetKeyDown(kcode)) {
-                     Checking all combos 
-                           checkCombo( kcode, actualCombo); 
-                }
-            }*/
-        
       
         }
 
@@ -74,37 +75,55 @@ public class Combo : MonoBehaviour
                 return combo.A;
             case "B":
                 return combo.B;
+            case "DOWN":
+                return combo.DOWN;
+            case "UP":
+                return combo.UP;
+            case "LEFT":
+                return combo.LEFT;
+            case "RIGHT":
+                return combo.RIGHT;
             default:
                 return combo.A;
 
         }
     }
 
-    public void createCombos ( TextAsset comboFile, string instrument ){
+    public List<combo> obtainInstrumentChords( string instrument, JSONNode data ){
+            JSONNode dataInstrument = data[instrument];
+            List<combo>comboSequence = new List<combo>();
+            for(int comboIdx = 0; comboIdx < dataInstrument.Count; comboIdx++){
+                string chordSeq =  splitString("\"", dataInstrument[comboIdx])[0];
+                comboSequence.Add( getComboValue( chordSeq ) );
+            }
+           
+            return comboSequence; 
+    }
+
+    public void createCombos ( TextAsset comboFile ){
         comboSystems = new Dictionary<string, ComboSystem>( ); 
         namesCombo = new List<string>( );
         string chordData = comboFile.text;
-        JSONNode data = JSON.Parse( chordData )[instrument];
+        JSONNode data = JSON.Parse( chordData )["chords"];
         
         for (int i = 0; i < data.Count; i++ ){
             ComboSystem comboSys = new ComboSystem( );
-            List<combo>comboSequence = new List<combo>();
-            JSONNode comboData =data[i];
-            for(int comboIdx = 0; comboIdx < comboData["combo"].Count; comboIdx++){
-                string chordSeq =  splitString("\"", comboData["combo"][comboIdx])[0];
-                comboSequence.Add( getComboValue( chordSeq ) );
-            }
-            comboSys.name = comboData["chord"] ;
-            comboSys.combo = comboSequence;
-            comboSystems.Add( comboData["chord"], comboSys );
+            Dictionary<string, List<combo>> _Combos =  new Dictionary<string, List<combo>>();
+            _Combos.Add("guitar", obtainInstrumentChords( "guitar", data[i]) ) ;
+            _Combos.Add("piano", obtainInstrumentChords( "piano", data[i]) ) ;
+
+            comboSys.combo = _Combos;
+            comboSys.name = data[i]["chord"];
+
+            comboSystems.Add( data[i]["chord"], comboSys );
         }
         
         isCreated = true;
     }
 
     /* Checking each combo, sending to the object to look at */
-    public bool checkCombo( KeyCode kcode, ComboSystem comboSys ) {
-        bool activateCombo = comboSys.check( kcode.ToString( ) );
+    public bool checkCombo( KeyCode kcode, ComboSystem comboSys, string insrument ) {
+        bool activateCombo = comboSys.check( kcode.ToString( ), insrument );
                 if (activateCombo){
                     return true;
                 }
@@ -124,7 +143,7 @@ public class Combo : MonoBehaviour
 }
 
 public class ComboSystem {
-    public List <combo> combo;
+    public Dictionary<string, List <combo>> combo;
     private Hashtable controls = new Hashtable( );
     public string name;
     public int index = 0;
@@ -134,13 +153,17 @@ public class ComboSystem {
         controls.Add("B", "JoystickButton1");
         controls.Add("X", "JoystickButton2");
         controls.Add("Y", "JoystickButton3");
+        controls.Add("DOWN", "DownArrow");
+        controls.Add("UP", "UpArrow");
+        controls.Add("LEFT", "LeftArrow");
+        controls.Add("RIGHT", "RightArrow");
     }
 
     /* Check with the comboList if the sequence is going the correct order */
-    public bool check (string _keyCode) {
-        if (_keyCode == controls[ combo[index].ToString( ) ].ToString( ) ){
+    public bool check (string _keyCode, string instrument) {
+        if (_keyCode == controls[ combo[instrument][index].ToString( ) ].ToString( ) ){
             index += 1;
-            if (index == combo.Count){
+            if (index == combo[instrument].Count){
                 index = 0;
                 return true;   
             }
