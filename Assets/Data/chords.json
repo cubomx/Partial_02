@@ -1,0 +1,74 @@
+{
+    "piano": {
+
+    },
+    "guitar" : [
+        {
+            "chord": "Em",
+            "combo": [
+                "X", "Y", "Y"
+            ]
+        },
+        {
+            "chord": "C",
+            "combo": [
+                "Y", "A", "Y"
+            ]
+        },
+        {
+            "chord": "B",
+            "combo": [
+                "X", "X", "Y"
+            ]
+        },
+        {
+            "chord": "Am",
+            "combo": [
+                "A", "X", "Y"
+            ]
+        },
+        {
+            "chord": "G/B",
+            "combo": [
+                "B", "B", "Y"
+            ]
+        },
+        {
+            "chord": "D",
+            "combo": [
+                "B", "Y", "A"
+            ]
+        },
+        {
+            "chord": "A",
+            "combo": [
+                "B", "B", "Y"
+            ]
+        },
+        {
+            "chord": "D#dim7",
+            "combo": [
+                "A", "A", "Y"
+            ]
+        },
+        {
+            "chord": "G",
+            "combo": [
+                "X", "A", "A"
+            ]
+        },
+        {
+            "chord": "F",
+            "combo": [
+                "A", "A", "B"
+            ]
+        },
+        {
+            "chord": "E",
+            "combo": [
+                "A", "A", "X"
+            ]
+        }
+    ]
+
+}
