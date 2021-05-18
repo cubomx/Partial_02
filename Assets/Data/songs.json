@@ -1,95 +1,78 @@
 {
-    "songs": [
-        {
-            "name": "Road Trippin",
-            "chords": ["Em", "C", "B", "Am", "G/B", "D", "A", "D#dim7" ],
-            "sequence": [
-                "Em", "C", "B",
-                "Em", "C", "B",
+  "song": {
+    "name": "Feel Good Inc.",
+    "chords": [
+      "BassDrum",
+      "SnareDrum",
+      "ClosedHiHat",
+      "MediumCrashCymbal",
+      "HandClap"
+    ],
+    "sequence": [
+      ["HandClap"],
+      ["HandClap"],
+      ["BassDrum", "ClosedHiHat"],
+      ["HandClap", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
 
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B" ,
-                "Em", "C", "B",
-                "Em", "C", "B" ,
+      ["BassDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
 
-                "Am", "G/B", "C", "D",
+      ["BassDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
 
-                "Am", "G/B", "C", "D",
-
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B" ,
-                "Am", "G/B", "C", "D",
-
-                "Em", "A", "C", "D", "Em", "A", "C", "D#dim7",
-                "Em", "A", "C", "D", "Em", "A", "C", "D#dim7",
-                "D#dim7", "D#dim7",
-
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B",
-                "Em", "C", "B" ,
-                "Em", "C", "B",
-                "Em", "C", "B" ,
-
-                "Am", "G/B", "C", "D",
-
-                "Am", "G/B", "C", "D",
-                "Am", "G/B", "C", "D",
-                "Am", "G/B", "C", "D",
-                "Em", "Em"
-
-
-            ]
-        },
-        {
-            "name": "Hallelujah",
-            "chords": ["C", "Am", "G", "F", "E" ],
-            "sequence": [
-                "C", "Am", "C", "Am", 
-                "F", "G", "C", "G", 
-                "C", "F", "G", "Am", "F",
-                "G", "E", "Am", "F", "G", "E", "Am",
-                "F", "Am", "F", "C", "G", "C", "G",
-
-                "C", "Am", "C", "Am", 
-                "F", "G", "C", "G", 
-                "C", "F", "G", "Am", "F",
-                "G", "E", "Am", 
-                "F", "Am", "F", "C", "G", "C", "G",
-
-                "C", "Am", "C", "Am", 
-                "F", "G", "C", "G", 
-                "C", "F", "G", "Am", "F",
-                "G", "E", "Am", 
-                "F", "Am", "F", "C", "G", "C", "G",
-                
-                "C", "Am", "C", "Am", 
-                "F", "G", "C", "G", 
-                "C", "F", "G", "Am", "F",
-                "G", "E", "Am", 
-                "F", "Am", "F", "C", "G", "C", "G",
-
-                "F", "Am", "F", "C", "G", "C", "G",
-
-                "F", "Am", "F", "C", "G", "C", "G"
-
-            ]
-        }
-        
-
+      ["BassDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["ClosedHiHat"],
+      ["BassDrum", "ClosedHiHat"],
+      ["SnareDrum", "ClosedHiHat"],
+      ["ClosedHiHat"]
     ]
-    
+  }
 }

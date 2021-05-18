@@ -24,7 +24,7 @@ public class Chords : MonoBehaviour
 
     private string chordLink = "";
     private string songsData = "";
-    private  List<List<string>> chordSequence;
+    private  Dictionary<string, List<string>> chordSequence;
 
     private List<string> chords;
 
@@ -32,11 +32,13 @@ public class Chords : MonoBehaviour
     private int songIndex;
     public  bool isReady;
 
+    public string nameSong;
+
     public bool setInstruction = false;
     public GameObject guitar, piano;
 
     private Dictionary<string, AudioClip> clips;
-
+    KeyCode [] codes;
 
     void Start()
     {
@@ -53,45 +55,50 @@ public class Chords : MonoBehaviour
         songIndex = 0;
         chords = new List<string>( );
         clips = new Dictionary<string, AudioClip>( );
-        chordSequence = new List<List<string>>( );
+        chordSequence = new Dictionary<string, List<string>>();
         audioSource = GetComponent<AudioSource>( );
         readChordSequenceFile( );
+        if (instrument == "guitar")  codes = combos.KeyCodes;
+        else codes = combos.KeyBoardKeyCodes;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if ( instrument == "drums"){
+            Debug.Log("hei");
+        }
 
-        if ( combos.isCreated && !setInstruction ){
-            combos.actualCombo = combos.comboSystems[chordSequence[songIndex][sequenceIndex]];
+       else if ( combos.isCreated && !setInstruction ){
+            combos.actualCombo = combos.comboSystems[chordSequence[nameSong][sequenceIndex]];
             isReady = true;
         }
 
-        if ( !isReady && setInstruction ){
-            KeyCode [] codes;
-            if (instrument == "guitar")  codes = combos.KeyCodes;
-            else codes = combos.KeyBoardKeyCodes;
-             
+        else if ( !isReady && setInstruction ){
             for (int index = 0; index < codes.Length; index++) {
                 KeyCode kcode = codes[index];
                 if (Input.GetKeyDown(kcode)) {
-                           if ( combos.checkCombo( kcode, combos.actualCombo, instrument )) {
-                               audioSource.clip = clips[ combos.actualCombo.name];
-                               audioSource.Play( );
-                               Debug.Log( "Done combo");
-                               sequenceIndex++;
-                               if ( sequenceIndex +1 >= chordSequence[songIndex].Count ){
-                                   Debug.Log( "Finished song");
-                               }
-                               else{
-                                   combos.actualCombo = combos.comboSystems[chordSequence[songIndex][sequenceIndex]];
-                                    setInstruction = false;
-                                    isReady = true;
-                               }
-                               
-                           }
+                           sequenceCombo( kcode );
                 }
             }
+        }
+    }
+
+    void sequenceCombo(KeyCode kcode ){
+        if ( combos.checkCombo( kcode, combos.actualCombo, instrument )) {
+            audioSource.clip = clips[ combos.actualCombo.name];
+            audioSource.Play( );
+            Debug.Log( "Done combo");
+            sequenceIndex++;
+            if ( sequenceIndex +1 >= chordSequence[nameSong].Count ){
+                Debug.Log( "Finished song");
+            }
+            else{
+                combos.actualCombo = combos.comboSystems[chordSequence[nameSong][sequenceIndex]];
+                setInstruction = false;
+                isReady = true;
+            }
+            
         }
     }
 
@@ -169,8 +176,7 @@ public class Chords : MonoBehaviour
             for (int i = 0; i < song[idxSong]["sequence"].Count; i++ ){
                 songChordsSequence.Add(splitString("\"", song[idxSong]["sequence"][i])[0]);
             }
-            chordSequence.Add( songChordsSequence );
-            
+            chordSequence.Add(song[idxSong]["name"], songChordsSequence);
             for (int i = 0; i < song[idxSong]["chords"].Count; i++){
                 string newChord = splitString("\"", song[idxSong]["chords"][i])[0];
 

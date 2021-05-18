@@ -84,7 +84,7 @@ public class Menu : MonoBehaviour
             buttons[sequenceIdx] = Instantiate( imageBtn, 
             new Vector3(trans.position.x, trans.position.y, trans.position.z ), Quaternion.identity, trans.parent);
             Vector3 imgPos = buttons[sequenceIdx] .transform.position;
-            imgPos += new Vector3(-250.0f + 150.0f*sequenceIdx, 0.0f, 0.0f);
+            imgPos += new Vector3(-250.0f + 350.0f*sequenceIdx, 0.0f, 0.0f);
             buttons[sequenceIdx] .transform.position = imgPos;
         }
          _Chords.isReady = false;
