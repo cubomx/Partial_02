@@ -50,7 +50,10 @@ public class HandleIntruments : MonoBehaviour
        string nameSong = songDrop.options[songDrop.value].text;
        chords.nameSong = nameSong;
        handler.SetActive(true);
-        menuHandler.SetActive(true);
+       if ( chords.instrument != "drums"){
+           menuHandler.SetActive(true);
+       }
+        
         canvasSelection.SetActive(false);
         canvasButtons.SetActive(true);
         songBtnConfirm.SetActive(false);

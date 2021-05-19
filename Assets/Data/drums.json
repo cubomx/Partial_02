@@ -1,0 +1,36 @@
+{
+    "chords": [
+        {
+            "name": "BassDrum",
+            "path": "bassDrum6a"
+        },
+        {
+            "name": "CrashCymbal",
+            "path": "crashCymbal6a"
+        },
+        {
+            "name": "FloorTom",
+            "path": "floorTom6a"
+        },
+        {
+            "name": "HighTom",
+            "path": "highTom6a"
+        },
+        {
+            "name": "HitHats",
+            "path": "hiHat6a"
+        },
+        {
+            "name": "MidTom",
+            "path": "midTom6a"
+        },
+        {
+            "name": "RideCymbal",
+            "path": "rideCymbal6a"
+        },
+        {
+            "name": "SnareDrum",
+            "path": "snareDrum6a"
+        }
+    ]
+}

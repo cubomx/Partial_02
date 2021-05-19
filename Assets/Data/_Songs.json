@@ -3,6 +3,7 @@
         {
             "name": "Road Trippin",
             "chords": ["Em", "C", "B", "Am", "G/B", "D", "A", "D#dim7" ],
+            "instrument": "guitar/piano",
             "sequence": [
                 "Em", "C", "B",
                 "Em", "C", "B",
@@ -57,6 +58,7 @@
         {
             "name": "Hallelujah",
             "chords": ["C", "Am", "G", "F", "E" ],
+            "instrument": "guitar/piano",
             "sequence": [
                 "C", "Am", "C", "Am", 
                 "F", "G", "C", "G", 
@@ -86,6 +88,83 @@
 
                 "F", "Am", "F", "C", "G", "C", "G"
 
+            ]
+        },
+        {
+            "name": "Feel Good Inc.",
+            "chords": [
+            "BassDrum",
+            "SnareDrum",
+            "HiHat",
+            "CrashCymbal",
+            "CrashCymbal"
+            ],
+            "instrument":"drums",
+            "sequence": [
+            ["CrashCymbal"],
+            ["CrashCymbal"],
+            ["BassDrum", "HitHat"],
+            ["CrashCymbal", "HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+
+            ["BassDrum", "HitHat"],
+            ["HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+
+            ["BassDrum", "HitHat"],
+            ["HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+
+            ["BassDrum", "HitHat"],
+            ["HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"],
+            ["HitHat"],
+            ["BassDrum", "HitHat"],
+            ["SnareDrum", "HitHat"],
+            ["HitHat"]
             ]
         }
         

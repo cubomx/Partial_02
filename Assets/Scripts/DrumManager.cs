@@ -6,38 +6,31 @@ public class DrumManager : MonoBehaviour
 {
     public AudioClip audioClip;
     AudioSource audioSource;
-    public Material normal, press;
+    public Material press;
+    public Material [] initialMaterials;
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = audioClip;
-        normal = GetComponent<Renderer>().material;
+        initialMaterials = GetComponent<Renderer>().materials;
     }
     // Update is called once per frame
     void Update()
     {
-        foreach (Touch touch in Input.touches)
-        {
-            Ray raycast = Camera.main.ScreenPointToRay(touch.position);
-            RaycastHit raycastHit;
-            Debug.Log(Physics.Raycast(raycast, out raycastHit));
-            if (Physics.Raycast(raycast, out raycastHit) && touch.phase == TouchPhase.Began)
-            {
-                GameObject gameObject = raycastHit.transform.gameObject;
-                string GameObjectHitName = raycastHit.transform.gameObject.name;
-                if (GameObjectHitName.Equals(gameObject.name))
-                {
-                    gameObject.GetComponent<Renderer>().material = press;
-                    StartCoroutine(restartColor(gameObject));
-                    audioSource.Play();
-                }
-            }
-        }
+        
 
+    }
+
+    public void changeMaterials( ){
+        Material [ ] materials = this.gameObject.GetComponent<Renderer>().materials;
+        for (int i = 0; i < materials.Length; i++){
+            materials[i] = press;
+        }
+        this.gameObject.GetComponent<Renderer>().materials = materials;
     }
 
     IEnumerator restartColor (GameObject gameObject ){
         yield return new WaitForSeconds(0.5f);
-        gameObject.GetComponent<Renderer>().material = normal;
+        gameObject.GetComponent<Renderer>().materials = initialMaterials;
     }
 }

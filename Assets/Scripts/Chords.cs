@@ -7,8 +7,7 @@ using System.IO;
 public class Chords : MonoBehaviour
 {
     // Start is called before the first frame update
-    public string response;
-    public TextAsset text;
+    public TextAsset text, drumsClips;
     public List<string> nameSongs;
 
     public TextAsset comboFile;
@@ -21,42 +20,44 @@ public class Chords : MonoBehaviour
     private string chord = "D#m(maj9)";
     public string instrument = "piano";
     private string output = "sound";
-
     private string chordLink = "";
     private string songsData = "";
     private  Dictionary<string, List<string>> chordSequence;
-
-    private List<string> chords;
+    private List<Chord> chords;
+    private Dictionary<string, DrumChord> drumChords;
 
     private int sequenceIndex;
-    private int songIndex;
     public  bool isReady;
 
     public string nameSong;
 
     public bool setInstruction = false;
-    public GameObject guitar, piano;
+    public GameObject guitar, piano, drums;
 
     private Dictionary<string, AudioClip> clips;
+
+    private bool drumColored;
+    private DrumManager drumManager;
     KeyCode [] codes;
 
     void Start()
     {
-        if ( instrument == "guitar" ){
+        if ( instrument == "guitar" )
             guitar.SetActive( true );
-        }
-        else if ( instrument == "piano" ){
+        else if ( instrument == "piano" )
             piano.SetActive( true );
-        }
+        else
+            drums.SetActive( true );
+
         gameObject.AddComponent<Combo>( );
         combos = gameObject.GetComponent<Combo>( );
         combos.createCombos( comboFile );
         sequenceIndex = 0;
-        songIndex = 0;
-        chords = new List<string>( );
+        chords = new List<Chord>( );
         clips = new Dictionary<string, AudioClip>( );
         chordSequence = new Dictionary<string, List<string>>();
         audioSource = GetComponent<AudioSource>( );
+        drumChords = new Dictionary<string, DrumChord>( );
         readChordSequenceFile( );
         if (instrument == "guitar")  codes = combos.KeyCodes;
         else codes = combos.KeyBoardKeyCodes;
@@ -66,7 +67,7 @@ public class Chords : MonoBehaviour
     void Update()
     {
         if ( instrument == "drums"){
-            Debug.Log("hei");
+            drumPlaying();
         }
 
        else if ( combos.isCreated && !setInstruction ){
@@ -80,6 +81,37 @@ public class Chords : MonoBehaviour
                 if (Input.GetKeyDown(kcode)) {
                            sequenceCombo( kcode );
                 }
+            }
+        }
+    }
+
+    void colorDrum(string nameGameObject ){
+    GameObject.Find(nameGameObject).GetComponent<DrumManager>().changeMaterials( );
+    }
+
+    void drumPlaying( ){
+        if (!drumColored){
+            for (int i = 0; i < drumChords[nameSong].chords[sequenceIndex].Count; i++){
+                colorDrum(drumChords[nameSong].chords[sequenceIndex][i]);
+            }
+            drumColored = true;
+        }
+
+        foreach (Touch touch in Input.touches)
+        {
+            Ray raycast = Camera.main.ScreenPointToRay(touch.position);
+            RaycastHit raycastHit;
+            if (Physics.Raycast(raycast, out raycastHit) && touch.phase == TouchPhase.Began)
+            {
+                
+                string GameObjectHitName = raycastHit.transform.gameObject.tag;
+                Debug.Log(GameObjectHitName);
+                /*if (GameObjectHitName.Equals(gameObject.name))
+                {
+                    gameObject.GetComponent<Renderer>().material = press;
+                    StartCoroutine(restartColor(gameObject));
+                    audioSource.Play();
+                }*/
             }
         }
     }
@@ -115,7 +147,7 @@ public class Chords : MonoBehaviour
             else
             {
                 myClip = DownloadHandlerAudioClip.GetContent(www);
-                clips.Add(chords[index], myClip);
+                clips.Add(chords[index].chord, myClip);
                 if ( index + 1 == chords.Count ){
                     StartCoroutine( wait ( ) );
                     
@@ -131,7 +163,7 @@ public class Chords : MonoBehaviour
             WWWForm form = new WWWForm();
             form.AddField("id", id);
             form.AddField("class", _class);
-            form.AddField("chord", chords[index]);
+            form.AddField("chord", chords[index].instrument);
             form.AddField("instrument", instrument);
             form.AddField("output", output);
 
@@ -145,7 +177,7 @@ public class Chords : MonoBehaviour
             }
             else
             {
-                response = www.downloadHandler.text;
+                string response = www.downloadHandler.text;
                 string[] values = splitString("<source src=\"", response);
                 //displayArray(values);
 
@@ -165,6 +197,26 @@ public class Chords : MonoBehaviour
         return haystack.Split(new string[] {needle}, System.StringSplitOptions.RemoveEmptyEntries);
     }
 
+    public List<List<string>> GetDrumsChord(int idxSong, JSONNode song ){
+        List<List<string>> chordsDrum = new List<List<string>>( );
+        for (int i = 0; i < song[idxSong]["sequence"].Count; i++ ){
+            List<string> newChord = new List<string>();
+            for (int j = 0; i < song[idxSong]["sequence"][i].Count; i++){
+                 newChord.Add(splitString("\"", song[idxSong]["sequence"][i][j])[0]);
+            }
+            chordsDrum.Add(newChord);
+        }
+        return chordsDrum;
+    }
+
+    public void getChordsSequence(int idxSong, JSONNode song){
+        List<string> songChordsSequence =  new List<string>();
+        for (int i = 0; i < song[idxSong]["sequence"].Count; i++ ){
+                songChordsSequence.Add(splitString("\"", song[idxSong]["sequence"][i])[0]);
+            }
+            chordSequence.Add(song[idxSong]["name"], songChordsSequence);
+    }
+
     public void readChordSequenceFile ( ){
         Dictionary<string, string> alreadyFoundChords = new Dictionary<string, string>( );
         songsData =  text.text ;
@@ -172,16 +224,19 @@ public class Chords : MonoBehaviour
         JSONNode data = JSON.Parse( songsData );
         JSONNode song = data["songs"];
         for(int idxSong = 0; idxSong < song.Count; idxSong++){
-            List<string> songChordsSequence =  new List<string>();
-            for (int i = 0; i < song[idxSong]["sequence"].Count; i++ ){
-                songChordsSequence.Add(splitString("\"", song[idxSong]["sequence"][i])[0]);
+            
+            if (song[idxSong]["instrument"] == "drums"){
+                drumChords.Add(song[idxSong]["name"], new DrumChord(GetDrumsChord( idxSong, song ))); 
             }
-            chordSequence.Add(song[idxSong]["name"], songChordsSequence);
+            else{
+                getChordsSequence(idxSong, song);
+            }
+            
             for (int i = 0; i < song[idxSong]["chords"].Count; i++){
                 string newChord = splitString("\"", song[idxSong]["chords"][i])[0];
 
                 if ( !alreadyFoundChords.ContainsKey( newChord ) ){
-                    chords.Add( newChord );
+                    chords.Add( new Chord(newChord, song[idxSong]["instrument"]) );
                     alreadyFoundChords.Add(newChord, newChord);
                 }
             }
@@ -193,9 +248,18 @@ public class Chords : MonoBehaviour
     }
 
     public void GetAllChords ( ){
+        GetDrumsClips();
         for (int i = 0; i < chords.Count; i++){
+            if ( chords[i].instrument != "drums")
                 StartCoroutine( GetChord (i) );
-            
+        }
+        
+    }
+
+    public void GetDrumsClips( ){
+        JSONNode data = JSON.Parse( drumsClips.text)["chords"];
+        for (int i = 0; i < data.Count; i++){
+            clips.Add(data[i]["name"], Resources.Load<AudioClip>(data[i]["path"]));
         }
     }
 
@@ -203,4 +267,21 @@ public class Chords : MonoBehaviour
         yield return new  WaitForSeconds(1.0f);
     }
 
+}
+
+
+public class Chord {
+    public string chord;
+    public string instrument;
+    public Chord (string chord, string instrument){
+        this.chord = chord;
+        this.instrument = instrument;
+    }
+}
+
+public class DrumChord {
+    public List<List<string>> chords;
+    public DrumChord(List<List<string>> chords){
+        this.chords = chords;
+    }
 }
