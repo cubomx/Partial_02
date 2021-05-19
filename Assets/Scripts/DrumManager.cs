@@ -8,8 +8,10 @@ public class DrumManager : MonoBehaviour
     AudioSource audioSource;
     public Material press;
     public Material [] initialMaterials;
+    public bool wasTouched;
     void Start()
     {
+        wasTouched = true;
         audioSource = GetComponent<AudioSource>();
         audioSource.clip = audioClip;
         initialMaterials = GetComponent<Renderer>().materials;
@@ -21,12 +23,22 @@ public class DrumManager : MonoBehaviour
 
     }
 
-    public void changeMaterials( ){
+    public void changeMaterials(bool colorIt ){
         Material [ ] materials = this.gameObject.GetComponent<Renderer>().materials;
         for (int i = 0; i < materials.Length; i++){
-            materials[i] = press;
+            materials[i] = ( colorIt ) ? press : initialMaterials[i] ;
         }
         this.gameObject.GetComponent<Renderer>().materials = materials;
+    }
+
+    public bool PlayClip( ){
+        if ( !this.wasTouched ){
+            changeMaterials( false );
+            audioSource.Play( );
+            this.wasTouched = true;
+            return true;
+        }
+        return false;
     }
 
     IEnumerator restartColor (GameObject gameObject ){

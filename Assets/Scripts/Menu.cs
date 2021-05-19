@@ -74,7 +74,7 @@ public class Menu : MonoBehaviour
         newPanel = Instantiate ( individualButtonPanel, 
         new Vector3(transform.position.x,transform.position.y, transform.position.z), Quaternion.identity, transform.parent );
         Vector3 panelGroupPos = newPanel.transform.position;
-        panelGroupPos += new Vector3(0.0f, 225.0f, 0.0f);
+        panelGroupPos += new Vector3(0.0f, 250.0f, 0.0f);
         newPanel.transform.position = panelGroupPos;
         changeTextInstruction( newPanel );
         for (int sequenceIdx = 0; sequenceIdx < _ComboData.Count; sequenceIdx++){

@@ -36,7 +36,7 @@ public class Chords : MonoBehaviour
 
     private Dictionary<string, AudioClip> clips;
 
-    private bool drumColored;
+    private bool drumColored, finishedSong;
     private DrumManager drumManager;
     KeyCode [] codes;
 
@@ -66,34 +66,40 @@ public class Chords : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( instrument == "drums"){
-            drumPlaying();
-        }
+        if (!finishedSong ){
+            if ( instrument == "drums"){
+                drumPlaying();
+            }
 
-       else if ( combos.isCreated && !setInstruction ){
-            combos.actualCombo = combos.comboSystems[chordSequence[nameSong][sequenceIndex]];
-            isReady = true;
-        }
+        else if ( combos.isCreated && !setInstruction ){
+                combos.actualCombo = combos.comboSystems[chordSequence[nameSong][sequenceIndex]];
+                isReady = true;
+            }
 
-        else if ( !isReady && setInstruction ){
-            for (int index = 0; index < codes.Length; index++) {
-                KeyCode kcode = codes[index];
-                if (Input.GetKeyDown(kcode)) {
-                           sequenceCombo( kcode );
+            else if ( !isReady && setInstruction ){
+                for (int index = 0; index < codes.Length; index++) {
+                    KeyCode kcode = codes[index];
+                    if (Input.GetKeyDown(kcode)) {
+                            sequenceCombo( kcode );
+                    }
                 }
             }
         }
     }
 
     void colorDrum(string nameGameObject ){
-    GameObject.Find(nameGameObject).GetComponent<DrumManager>().changeMaterials( );
+        GameObject drumGO = GameObject.Find(nameGameObject);
+        drumGO.GetComponent<DrumManager>().changeMaterials( true );
+        drumGO.GetComponent<DrumManager>().wasTouched = false;
     }
+
 
     void drumPlaying( ){
         if (!drumColored){
             for (int i = 0; i < drumChords[nameSong].chords[sequenceIndex].Count; i++){
                 colorDrum(drumChords[nameSong].chords[sequenceIndex][i]);
             }
+            drumChords[nameSong].leftTouch = drumChords[nameSong].chords[sequenceIndex].Count;
             drumColored = true;
         }
 
@@ -103,22 +109,31 @@ public class Chords : MonoBehaviour
             RaycastHit raycastHit;
             if (Physics.Raycast(raycast, out raycastHit) && touch.phase == TouchPhase.Began)
             {
-                
-                string GameObjectHitName = raycastHit.transform.gameObject.tag;
-                Debug.Log(GameObjectHitName);
-                /*if (GameObjectHitName.Equals(gameObject.name))
-                {
-                    gameObject.GetComponent<Renderer>().material = press;
-                    StartCoroutine(restartColor(gameObject));
-                    audioSource.Play();
-                }*/
+                GameObject hitGO = raycastHit.transform.gameObject;
+                DrumManager drumManager = hitGO.GetComponent<DrumManager>();
+                if ( hitGO.tag != "Untagged"){
+                    bool itPlayed = hitGO.GetComponent<DrumManager>().PlayClip( );
+                    if ( itPlayed ){
+                        drumChords[nameSong].leftTouch--;
+                        if (drumChords[nameSong].leftTouch == 0){
+                            sequenceIndex++;
+                            drumColored = false;
+                            if ( sequenceIndex == drumChords[nameSong].chords.Count ){
+                                Debug.Log("Finished song");
+                                finishedSong = true;
+                                GameObject.Find("HandleInsturments").GetComponent<HandleIntruments>().RestartEverything( true );
+                            }
+                        }
+                    } 
+                }
             }
         }
     }
 
     void sequenceCombo(KeyCode kcode ){
         if ( combos.checkCombo( kcode, combos.actualCombo, instrument )) {
-            audioSource.clip = clips[ combos.actualCombo.name];
+            Debug.Log( combos.actualCombo.name );
+            audioSource.clip = clips[ combos.actualCombo.name ];
             audioSource.Play( );
             Debug.Log( "Done combo");
             sequenceIndex++;
@@ -136,34 +151,28 @@ public class Chords : MonoBehaviour
 
     IEnumerator GetAudioClip(int index )
     {
-            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(chordLink, AudioType.MPEG))
-        {
+            using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(chordLink, AudioType.MPEG)){
             yield return www.SendWebRequest();
  
-            if (www.isNetworkError)
-            {
+            if (www.isNetworkError){
                 Debug.Log(www.error);
             }
-            else
-            {
+            else{
                 myClip = DownloadHandlerAudioClip.GetContent(www);
                 clips.Add(chords[index].chord, myClip);
-                if ( index + 1 == chords.Count ){
+                if ( index + 1 == chords.Count )
                     StartCoroutine( wait ( ) );
-                    
-                }
             }
-    
         }
-        
     }
 
     IEnumerator GetChord(int index)
     {
+            Debug.Log(chords[index].chord +  instrument );
             WWWForm form = new WWWForm();
             form.AddField("id", id);
             form.AddField("class", _class);
-            form.AddField("chord", chords[index].instrument);
+            form.AddField("chord", chords[index].chord);
             form.AddField("instrument", instrument);
             form.AddField("output", output);
 
@@ -172,14 +181,10 @@ public class Chords : MonoBehaviour
             yield return www.SendWebRequest( );
 
             if (www.result != UnityWebRequest.Result.Success)
-            {
                 Debug.Log(www.error);
-            }
-            else
-            {
+            else{
                 string response = www.downloadHandler.text;
                 string[] values = splitString("<source src=\"", response);
-                //displayArray(values);
 
                 for (int i = 0; i < values.Length; i++ ){
                     if ( values[i].Contains("type") && values[i].Contains("mp3")){
@@ -187,11 +192,8 @@ public class Chords : MonoBehaviour
                         StartCoroutine( GetAudioClip(index ) );
                     }
                 }
-            
             }
-        
     }
-     
 
     public string[] splitString(string needle, string haystack) {
         return haystack.Split(new string[] {needle}, System.StringSplitOptions.RemoveEmptyEntries);
@@ -201,8 +203,9 @@ public class Chords : MonoBehaviour
         List<List<string>> chordsDrum = new List<List<string>>( );
         for (int i = 0; i < song[idxSong]["sequence"].Count; i++ ){
             List<string> newChord = new List<string>();
-            for (int j = 0; i < song[idxSong]["sequence"][i].Count; i++){
-                 newChord.Add(splitString("\"", song[idxSong]["sequence"][i][j])[0]);
+            for (int j = 0; j < song[idxSong]["sequence"][i].Count; j++){
+                string word = splitString("\"", song[idxSong]["sequence"][i][j])[0];
+                 newChord.Add(word);
             }
             chordsDrum.Add(newChord);
         }
@@ -225,12 +228,10 @@ public class Chords : MonoBehaviour
         JSONNode song = data["songs"];
         for(int idxSong = 0; idxSong < song.Count; idxSong++){
             
-            if (song[idxSong]["instrument"] == "drums"){
+            if (song[idxSong]["instrument"] == "drums")
                 drumChords.Add(song[idxSong]["name"], new DrumChord(GetDrumsChord( idxSong, song ))); 
-            }
-            else{
+            else
                 getChordsSequence(idxSong, song);
-            }
             
             for (int i = 0; i < song[idxSong]["chords"].Count; i++){
                 string newChord = splitString("\"", song[idxSong]["chords"][i])[0];
@@ -239,11 +240,8 @@ public class Chords : MonoBehaviour
                     chords.Add( new Chord(newChord, song[idxSong]["instrument"]) );
                     alreadyFoundChords.Add(newChord, newChord);
                 }
-            }
-            
+            } 
         }
-        
-        
         GetAllChords( );
     }
 
@@ -253,7 +251,6 @@ public class Chords : MonoBehaviour
             if ( chords[i].instrument != "drums")
                 StartCoroutine( GetChord (i) );
         }
-        
     }
 
     public void GetDrumsClips( ){
@@ -281,6 +278,7 @@ public class Chord {
 
 public class DrumChord {
     public List<List<string>> chords;
+    public int leftTouch = 0;
     public DrumChord(List<List<string>> chords){
         this.chords = chords;
     }

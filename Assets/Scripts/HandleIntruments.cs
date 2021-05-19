@@ -12,7 +12,7 @@ public class HandleIntruments : MonoBehaviour
 
     public GameObject handler;
     public GameObject menuHandler;
-
+    public GameObject textMessage;
     public GameObject canvasSelection, canvasButtons;
     public GameObject instrumentBtnConfirm, songBtnConfirm; 
     public List<string> guitarPianoSongs, drumsSongs;
@@ -28,8 +28,6 @@ public class HandleIntruments : MonoBehaviour
         songDrop = songSelect.GetComponent<TMP_Dropdown>();
     }
 
-
-
     // Update is called once per frame
    public void getSelectedInstrument( ){
        string value = instrumentDrop.options[instrumentDrop.value].text;
@@ -40,22 +38,40 @@ public class HandleIntruments : MonoBehaviour
             songDrop.AddOptions(drumsSongs);
 
        chords.instrument = value.ToLower();
-        instrumentSelect.SetActive(false);
+        ChangeInitialUI( false );
         songSelect.SetActive(true);
-        instrumentBtnConfirm.SetActive(false);
         songBtnConfirm.SetActive(true);
    }
 
    public void getSong( ){
        string nameSong = songDrop.options[songDrop.value].text;
        chords.nameSong = nameSong;
-       handler.SetActive(true);
-       if ( chords.instrument != "drums"){
-           menuHandler.SetActive(true);
-       }
-        
-        canvasSelection.SetActive(false);
-        canvasButtons.SetActive(true);
+       RestartEverything( false );
         songBtnConfirm.SetActive(false);
+   }
+
+    public void ChangeInitialUI (bool isRestart ){
+        instrumentSelect.SetActive(isRestart);
+        instrumentBtnConfirm.SetActive(isRestart);
+        songSelect.SetActive(!isRestart);
+        songBtnConfirm.SetActive(!isRestart);
+    }
+   public void RestartEverything(bool isRestart ){
+       textMessage.SetActive( isRestart );
+       songSelect.SetActive(!isRestart);
+       songBtnConfirm.SetActive(!isRestart);
+       canvasSelection.SetActive( isRestart );
+       StartCoroutine( waitForMessage( isRestart ) );
+   }
+
+   IEnumerator waitForMessage(bool showMessage){
+       yield return new WaitForSeconds( showMessage ? 3.0f : 0.0f);
+       handler.SetActive(!showMessage);
+        if ( chords.instrument != "drums" || showMessage ){
+           menuHandler.SetActive(!showMessage);
+       }
+       textMessage.SetActive( false );
+       canvasButtons.SetActive(!showMessage);
+       ChangeInitialUI( showMessage );
    }
 }
