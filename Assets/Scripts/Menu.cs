@@ -76,7 +76,7 @@ public class Menu : MonoBehaviour
         Vector3 panelGroupPos = newPanel.transform.position;
         panelGroupPos += new Vector3(0.0f, 250.0f, 0.0f);
         newPanel.transform.position = panelGroupPos;
-        
+        newPanel.transform.parent = transform;
         changeTextInstruction( newPanel );
         
         for (int sequenceIdx = 0; sequenceIdx < _ComboData.Count; sequenceIdx++){
@@ -95,6 +95,7 @@ public class Menu : MonoBehaviour
         Vector3 imgPos = buttons[sequenceIdx] .transform.position;
         imgPos += new Vector3(-250.0f + 350.0f*sequenceIdx, 0.0f, 0.0f);
         buttons[sequenceIdx] .transform.position = imgPos;
+        buttons[sequenceIdx] .transform.parent = newPanel.transform;
     }
 
 

@@ -12,8 +12,8 @@ public class Chords : MonoBehaviour
 
     public TextAsset comboFile;
     public Combo combos;
-    AudioSource audioSource;
-    AudioClip myClip;
+    public AudioSource audioSource;
+    public AudioClip myClip;
 
     private string id = "scapiobjid3";
     private string _class = "scales_chords_api";
@@ -26,8 +26,8 @@ public class Chords : MonoBehaviour
     private List<Chord> chords;
     private Dictionary<string, DrumChord> drumChords;
 
-    private int sequenceIndex;
-    public  bool isReady;
+    public int sequenceIndex;
+    public  bool isReady, finishedSong;
 
     public string nameSong;
 
@@ -36,7 +36,7 @@ public class Chords : MonoBehaviour
 
     private Dictionary<string, AudioClip> clips;
 
-    private bool drumColored, finishedSong;
+    private bool drumColored;
     private DrumManager drumManager;
     KeyCode [] codes;
 
@@ -53,6 +53,7 @@ public class Chords : MonoBehaviour
         combos = gameObject.GetComponent<Combo>( );
         combos.createCombos( comboFile );
         sequenceIndex = 0;
+        finishedSong = false;
         chords = new List<Chord>( );
         clips = new Dictionary<string, AudioClip>( );
         chordSequence = new Dictionary<string, List<string>>();
@@ -62,6 +63,7 @@ public class Chords : MonoBehaviour
         if (instrument == "guitar")  codes = combos.KeyCodes;
         else codes = combos.KeyBoardKeyCodes;
     }
+    
 
     // Update is called once per frame
     void Update()
@@ -83,8 +85,12 @@ public class Chords : MonoBehaviour
                 }
             }
         }
-        else
+        else{
+            combos.isCreated = true;
+            setInstruction = false;
             GameObject.Find("HandleInsturments").GetComponent<HandleIntruments>().RestartEverything( true );
+        }
+            
     }
     /* Tell the objects that are part of the actual combo to be of a different color */
     void colorDrum(string nameGameObject ){
