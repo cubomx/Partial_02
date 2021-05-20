@@ -63,33 +63,41 @@ public class Menu : MonoBehaviour
     /* Create the panel that groups the image sequence of buttons */
     void createInstructions( ){
         if ( newPanel != null){
+            /* Delete the previous elements of the combo sequence */
             Destroy (newPanel);
-            for (int sequenceIdx = 0; sequenceIdx < buttons.Length; sequenceIdx++){
+            for (int sequenceIdx = 0; sequenceIdx < buttons.Length; sequenceIdx++)
                 Destroy( buttons[sequenceIdx] );
-            }
         }
         Debug.Log( _Chords.instrument );
         List<combo> _ComboData = _Combo.actualCombo.combo[_Chords.instrument];
-        
+        /* Create the panel that groups all the sequence icons*/
         newPanel = Instantiate ( individualButtonPanel, 
         new Vector3(transform.position.x,transform.position.y, transform.position.z), Quaternion.identity, transform.parent );
         Vector3 panelGroupPos = newPanel.transform.position;
         panelGroupPos += new Vector3(0.0f, 250.0f, 0.0f);
         newPanel.transform.position = panelGroupPos;
+        
         changeTextInstruction( newPanel );
+        
         for (int sequenceIdx = 0; sequenceIdx < _ComboData.Count; sequenceIdx++){
-            
-            GameObject imageBtn = selectImage( _ComboData[sequenceIdx].ToString( ) );
-            Transform trans = newPanel.transform;
-            buttons[sequenceIdx] = Instantiate( imageBtn, 
-            new Vector3(trans.position.x, trans.position.y, trans.position.z ), Quaternion.identity, trans.parent);
-            Vector3 imgPos = buttons[sequenceIdx] .transform.position;
-            imgPos += new Vector3(-250.0f + 350.0f*sequenceIdx, 0.0f, 0.0f);
-            buttons[sequenceIdx] .transform.position = imgPos;
+            addSequenceIcon( _ComboData, sequenceIdx ); 
         }
          _Chords.isReady = false;
          _Chords.setInstruction = true;
     }
+
+    /* Add the icon of a part of the sequence to the UI */
+    void addSequenceIcon(List<combo> _ComboData, int sequenceIdx  ){
+        GameObject imageBtn = selectImage( _ComboData[sequenceIdx].ToString( ) );
+        Transform trans = newPanel.transform;
+        buttons[sequenceIdx] = Instantiate( imageBtn, 
+        new Vector3(trans.position.x, trans.position.y, trans.position.z ), Quaternion.identity, trans.parent);
+        Vector3 imgPos = buttons[sequenceIdx] .transform.position;
+        imgPos += new Vector3(-250.0f + 350.0f*sequenceIdx, 0.0f, 0.0f);
+        buttons[sequenceIdx] .transform.position = imgPos;
+    }
+
+
     /* Wait a little bit to the other codes to have the combos ready */
     IEnumerator WaitToStart( ) {
         

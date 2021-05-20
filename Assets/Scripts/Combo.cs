@@ -15,20 +15,13 @@ public enum combo{
         UP
     }
 
-
 public class Combo : MonoBehaviour
 {
     public Dictionary<string, ComboSystem> comboSystems;
     public List<string> namesCombo;
     public ComboSystem actualCombo;
     public int index = 0;
-
     public bool isCreated;
-
-    // Start is called before the first frame update
-    void Start() {
-
-    }
 
     public KeyCode []  KeyCodes =  new KeyCode [] {
         KeyCode.JoystickButton0,
@@ -60,11 +53,9 @@ public class Combo : MonoBehaviour
         KeyCode.LeftArrow
     };
 
-    // Update is called once per frame
-    void Update( ) {
-      
-        }
-
+    /* return the require value of the enum depending of the string given
+        by the file
+    */
     combo getComboValue ( string value ) {
         switch (value){
             case "X":
@@ -88,7 +79,7 @@ public class Combo : MonoBehaviour
 
         }
     }
-
+    // Get the whole sequence of the chords of every instrument
     public List<combo> obtainInstrumentChords( string instrument, JSONNode data ){
             JSONNode dataInstrument = data[instrument];
             List<combo>comboSequence = new List<combo>();
@@ -99,7 +90,7 @@ public class Combo : MonoBehaviour
            
             return comboSequence; 
     }
-
+    /* Get the combos from the files and create all the ComboSystems */
     public void createCombos ( TextAsset comboFile ){
         comboSystems = new Dictionary<string, ComboSystem>( ); 
         namesCombo = new List<string>( );
@@ -109,6 +100,7 @@ public class Combo : MonoBehaviour
         for (int i = 0; i < data.Count; i++ ){
             ComboSystem comboSys = new ComboSystem( );
             Dictionary<string, List<combo>> _Combos =  new Dictionary<string, List<combo>>();
+            // Get the sequence from both instruments (piano, guitar)
             _Combos.Add("guitar", obtainInstrumentChords( "guitar", data[i]) ) ;
             _Combos.Add("piano", obtainInstrumentChords( "piano", data[i]) ) ;
 
@@ -135,7 +127,7 @@ public class Combo : MonoBehaviour
         for( int idx = 0; idx < namesCombo.Count; idx++)
             comboSystems[namesCombo[idx]].index = 0;
     }
-
+    // a good split of the string
      public string[] splitString(string needle, string haystack) {
         return haystack.Split(new string[] {needle}, System.StringSplitOptions.RemoveEmptyEntries);
     }
@@ -149,6 +141,7 @@ public class ComboSystem {
     public int index = 0;
 
     public ComboSystem( ) {
+        // Add all the combos 
         controls.Add("A", "JoystickButton0");
         controls.Add("B", "JoystickButton1");
         controls.Add("X", "JoystickButton2");

@@ -16,13 +16,8 @@ public class DrumManager : MonoBehaviour
         audioSource.clip = audioClip;
         initialMaterials = GetComponent<Renderer>().materials;
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
 
-    }
-
+    /* If this part of the drum is present in the sequence of the chords, change its color */
     public void changeMaterials(bool colorIt ){
         Material [ ] materials = this.gameObject.GetComponent<Renderer>().materials;
         for (int i = 0; i < materials.Length; i++){
@@ -31,6 +26,7 @@ public class DrumManager : MonoBehaviour
         this.gameObject.GetComponent<Renderer>().materials = materials;
     }
 
+    /* Check if this object is the one that it is needed to play at this moment */
     public bool PlayClip( ){
         if ( !this.wasTouched ){
             changeMaterials( false );
@@ -41,8 +37,4 @@ public class DrumManager : MonoBehaviour
         return false;
     }
 
-    IEnumerator restartColor (GameObject gameObject ){
-        yield return new WaitForSeconds(0.5f);
-        gameObject.GetComponent<Renderer>().materials = initialMaterials;
-    }
 }

@@ -67,9 +67,8 @@ public class Chords : MonoBehaviour
     void Update()
     {
         if (!finishedSong ){
-            if ( instrument == "drums"){
+            if ( instrument == "drums")
                 drumPlaying();
-            }
 
         else if ( combos.isCreated && !setInstruction ){
                 combos.actualCombo = combos.comboSystems[chordSequence[nameSong][sequenceIndex]];
@@ -79,23 +78,27 @@ public class Chords : MonoBehaviour
             else if ( !isReady && setInstruction ){
                 for (int index = 0; index < codes.Length; index++) {
                     KeyCode kcode = codes[index];
-                    if (Input.GetKeyDown(kcode)) {
-                            sequenceCombo( kcode );
-                    }
+                    if (Input.GetKeyDown(kcode))
+                        sequenceCombo( kcode );
                 }
             }
         }
+        else
+            GameObject.Find("HandleInsturments").GetComponent<HandleIntruments>().RestartEverything( true );
     }
-
+    /* Tell the objects that are part of the actual combo to be of a different color */
     void colorDrum(string nameGameObject ){
         GameObject drumGO = GameObject.Find(nameGameObject);
         drumGO.GetComponent<DrumManager>().changeMaterials( true );
         drumGO.GetComponent<DrumManager>().wasTouched = false;
     }
 
-
+    /* Detect the touches on the Drums and if the user touches a part of the drums
+        that it requires to play in that moment.
+    */
     void drumPlaying( ){
         if (!drumColored){
+            /* Colored it the drums of the actual sequence */
             for (int i = 0; i < drumChords[nameSong].chords[sequenceIndex].Count; i++){
                 colorDrum(drumChords[nameSong].chords[sequenceIndex][i]);
             }
@@ -107,11 +110,11 @@ public class Chords : MonoBehaviour
         {
             Ray raycast = Camera.main.ScreenPointToRay(touch.position);
             RaycastHit raycastHit;
-            if (Physics.Raycast(raycast, out raycastHit) && touch.phase == TouchPhase.Began)
-            {
+            if (Physics.Raycast(raycast, out raycastHit) && touch.phase == TouchPhase.Began){
                 GameObject hitGO = raycastHit.transform.gameObject;
                 DrumManager drumManager = hitGO.GetComponent<DrumManager>();
                 if ( hitGO.tag != "Untagged"){
+                    /* Detect if the part touched is on the sequence */
                     bool itPlayed = hitGO.GetComponent<DrumManager>().PlayClip( );
                     if ( itPlayed ){
                         drumChords[nameSong].leftTouch--;
@@ -121,7 +124,6 @@ public class Chords : MonoBehaviour
                             if ( sequenceIndex == drumChords[nameSong].chords.Count ){
                                 Debug.Log("Finished song");
                                 finishedSong = true;
-                                GameObject.Find("HandleInsturments").GetComponent<HandleIntruments>().RestartEverything( true );
                             }
                         }
                     } 
@@ -130,15 +132,17 @@ public class Chords : MonoBehaviour
         }
     }
 
+    /* Check the kcode pressed in relation to the actual combo */
     void sequenceCombo(KeyCode kcode ){
         if ( combos.checkCombo( kcode, combos.actualCombo, instrument )) {
-            Debug.Log( combos.actualCombo.name );
+            // if the combo is done, play the corresponding clip
             audioSource.clip = clips[ combos.actualCombo.name ];
             audioSource.Play( );
             Debug.Log( "Done combo");
             sequenceIndex++;
             if ( sequenceIndex +1 >= chordSequence[nameSong].Count ){
                 Debug.Log( "Finished song");
+                finishedSong = true;
             }
             else{
                 combos.actualCombo = combos.comboSystems[chordSequence[nameSong][sequenceIndex]];
@@ -149,6 +153,7 @@ public class Chords : MonoBehaviour
         }
     }
 
+    /* Get the .mp3 file from the API, depends on the chord and the instrument */
     IEnumerator GetAudioClip(int index )
     {
             using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(chordLink, AudioType.MPEG)){
@@ -166,6 +171,7 @@ public class Chords : MonoBehaviour
         }
     }
 
+    /* Get the link from the API according to the instrument and chord needed s*/
     IEnumerator GetChord(int index)
     {
             Debug.Log(chords[index].chord +  instrument );
@@ -185,7 +191,7 @@ public class Chords : MonoBehaviour
             else{
                 string response = www.downloadHandler.text;
                 string[] values = splitString("<source src=\"", response);
-
+                /* Manipulate the string to get the URL for the .mp3 file */
                 for (int i = 0; i < values.Length; i++ ){
                     if ( values[i].Contains("type") && values[i].Contains("mp3")){
                         chordLink = splitString("\" type", values[i])[0];
@@ -199,6 +205,9 @@ public class Chords : MonoBehaviour
         return haystack.Split(new string[] {needle}, System.StringSplitOptions.RemoveEmptyEntries);
     }
 
+    /* Get the sequence of the drums (it is different from the piano/guitar
+        because it can play many parts of the drums)
+    */
     public List<List<string>> GetDrumsChord(int idxSong, JSONNode song ){
         List<List<string>> chordsDrum = new List<List<string>>( );
         for (int i = 0; i < song[idxSong]["sequence"].Count; i++ ){
@@ -212,6 +221,7 @@ public class Chords : MonoBehaviour
         return chordsDrum;
     }
 
+    /* Get the whole sequence of the songs (only guitar/piano)*/
     public void getChordsSequence(int idxSong, JSONNode song){
         List<string> songChordsSequence =  new List<string>();
         for (int i = 0; i < song[idxSong]["sequence"].Count; i++ ){
@@ -220,12 +230,14 @@ public class Chords : MonoBehaviour
             chordSequence.Add(song[idxSong]["name"], songChordsSequence);
     }
 
+    /* Get all the song sequence from the JSON file*/
     public void readChordSequenceFile ( ){
         Dictionary<string, string> alreadyFoundChords = new Dictionary<string, string>( );
         songsData =  text.text ;
 
         JSONNode data = JSON.Parse( songsData );
         JSONNode song = data["songs"];
+        // Get every song sequence
         for(int idxSong = 0; idxSong < song.Count; idxSong++){
             
             if (song[idxSong]["instrument"] == "drums")
@@ -235,7 +247,7 @@ public class Chords : MonoBehaviour
             
             for (int i = 0; i < song[idxSong]["chords"].Count; i++){
                 string newChord = splitString("\"", song[idxSong]["chords"][i])[0];
-
+                /* Save all the chords to be downloaded or loaded */
                 if ( !alreadyFoundChords.ContainsKey( newChord ) ){
                     chords.Add( new Chord(newChord, song[idxSong]["instrument"]) );
                     alreadyFoundChords.Add(newChord, newChord);
@@ -245,6 +257,7 @@ public class Chords : MonoBehaviour
         GetAllChords( );
     }
 
+    /* Get all the clips needed to reproduce the chords*/
     public void GetAllChords ( ){
         GetDrumsClips();
         for (int i = 0; i < chords.Count; i++){
@@ -253,6 +266,7 @@ public class Chords : MonoBehaviour
         }
     }
 
+    /* Get the drums clips that are on the Resources folder */
     public void GetDrumsClips( ){
         JSONNode data = JSON.Parse( drumsClips.text)["chords"];
         for (int i = 0; i < data.Count; i++){

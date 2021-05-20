@@ -28,7 +28,9 @@ public class HandleIntruments : MonoBehaviour
         songDrop = songSelect.GetComponent<TMP_Dropdown>();
     }
 
-    // Update is called once per frame
+    /* Get the selected instrument in the DropDown and change to the
+        selection of the song.
+    */
    public void getSelectedInstrument( ){
        string value = instrumentDrop.options[instrumentDrop.value].text;
        songDrop.ClearOptions();
@@ -43,19 +45,23 @@ public class HandleIntruments : MonoBehaviour
         songBtnConfirm.SetActive(true);
    }
 
+   /* Get the selected song in the dropdown and starting the gameplay */
    public void getSong( ){
        string nameSong = songDrop.options[songDrop.value].text;
        chords.nameSong = nameSong;
        RestartEverything( false );
         songBtnConfirm.SetActive(false);
    }
-
+    /* Change the DropDown and the Button required */
     public void ChangeInitialUI (bool isRestart ){
         instrumentSelect.SetActive(isRestart);
         instrumentBtnConfirm.SetActive(isRestart);
         songSelect.SetActive(!isRestart);
         songBtnConfirm.SetActive(!isRestart);
     }
+
+    /* Change the scene UI depending if is the start or not */
+
    public void RestartEverything(bool isRestart ){
        textMessage.SetActive( isRestart );
        songSelect.SetActive(!isRestart);
@@ -64,6 +70,10 @@ public class HandleIntruments : MonoBehaviour
        StartCoroutine( waitForMessage( isRestart ) );
    }
 
+
+    /* Changing the UI. Appear or dissapear objects and handle the appearing of the
+        song finish message.
+    */
    IEnumerator waitForMessage(bool showMessage){
        yield return new WaitForSeconds( showMessage ? 3.0f : 0.0f);
        handler.SetActive(!showMessage);
