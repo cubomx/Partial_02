@@ -16,6 +16,9 @@ public class HandleIntruments : MonoBehaviour
     public GameObject canvasSelection, canvasButtons;
     public GameObject instrumentBtnConfirm, songBtnConfirm; 
     public List<string> guitarPianoSongs, drumsSongs;
+    public Sprite escapeIcon, menuIcon;
+
+    public GameObject menuImage;
     private Chords chords;
 
     private TMP_Dropdown instrumentDrop, songDrop;
@@ -40,19 +43,8 @@ public class HandleIntruments : MonoBehaviour
         selection of the song.
     */
 
-    void Update( ){
-        if ( Input.GetKeyDown(KeyCode.JoystickButton5)){
-            Debug.Log("hei");
-            dropSelected = !dropSelected;
-            if ( dropSelected ){
-                actualDrop.Select( );
-            }
-            else{
-                actualButton.Select( );
-            }
-        }
-    }
-
+   
+    /* The elements to move around with the controller */
     void changeActualDropAndButton( ){
         actualDrop = instrumentSelection ? instrumentDrop : songDrop;
         actualButton = instrumentSelection 
@@ -60,6 +52,8 @@ public class HandleIntruments : MonoBehaviour
         : songBtnConfirm.GetComponent<Button>();
         actualDrop.Select( );
     }
+
+    /* Get the selected instrument by the user in the dropdown */
    public void getSelectedInstrument( ){
        string value = instrumentDrop.options[instrumentDrop.value].text;
        songDrop.ClearOptions();
@@ -69,6 +63,7 @@ public class HandleIntruments : MonoBehaviour
             songDrop.AddOptions(drumsSongs);
 
        chords.instrument = value.ToLower();
+       changeOpenMenuIcon( chords.instrument );
         ChangeInitialUI( false );
         songSelect.SetActive(true);
         songBtnConfirm.SetActive(true);
@@ -114,14 +109,29 @@ public class HandleIntruments : MonoBehaviour
        StartCoroutine( waitForMessage( isRestart ) );
    }
 
+   public void changeOpenMenuIcon(string instrument){
+       if (instrument == "piano"){
+           menuImage.GetComponent<Image>().sprite = escapeIcon;
+       }
+       else{
+           menuImage.GetComponent<Image>().sprite = menuIcon;
+       }
+    }
+
 
     /* Changing the UI. Appear or dissapear objects and handle the appearing of the
         song finish message.
     */
    IEnumerator waitForMessage(bool showMessage){
+       
        yield return new WaitForSeconds( showMessage ? 3.0f : 0.0f);
        
        handler.SetActive(!showMessage);
+       if ( !showMessage ){
+           menuHandler.GetComponent<Menu>().DestroyPanel( );
+           handler.GetComponent<Chords>().restartInstruments( );
+           handler.GetComponent<Chords>().initializeValues( );
+       }
         if ( chords.instrument != "drums" || showMessage ){
            menuHandler.SetActive(!showMessage);
        }

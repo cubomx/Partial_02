@@ -40,8 +40,24 @@ public class Chords : MonoBehaviour
     private DrumManager drumManager;
     KeyCode [] codes;
 
+    
     void Start()
     {
+        
+    }
+
+    /* Hide all instruments GameObjects */
+    public void restartInstruments( ){
+        guitar.SetActive( false );
+        piano.SetActive( false );
+        drums.SetActive( false );
+    }
+
+    /* Give the initial values of the chords handler */
+
+    public void initializeValues( ){
+        audioSource = GetComponent<AudioSource>( );
+        audioSource.Stop( );
         if ( instrument == "guitar" )
             guitar.SetActive( true );
         else if ( instrument == "piano" )
@@ -57,7 +73,7 @@ public class Chords : MonoBehaviour
         chords = new List<Chord>( );
         clips = new Dictionary<string, AudioClip>( );
         chordSequence = new Dictionary<string, List<string>>();
-        audioSource = GetComponent<AudioSource>( );
+        
         drumChords = new Dictionary<string, DrumChord>( );
         readChordSequenceFile( );
         if (instrument == "guitar")  codes = combos.KeyCodes;
@@ -86,12 +102,20 @@ public class Chords : MonoBehaviour
             }
         }
         else{
+            stopChord( );
             combos.isCreated = true;
             setInstruction = false;
             GameObject.Find("HandleInsturments").GetComponent<HandleIntruments>().RestartEverything( true );
         }
             
     }
+
+    public void stopChord( ){
+        myClip = null;
+        audioSource.Stop( );
+        combos.RestartCombos( );
+    }
+
     /* Tell the objects that are part of the actual combo to be of a different color */
     void colorDrum(string nameGameObject ){
         GameObject drumGO = GameObject.Find(nameGameObject);

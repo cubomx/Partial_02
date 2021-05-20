@@ -60,14 +60,22 @@ public class Menu : MonoBehaviour
             child.GetComponent<Text>().text = _Combo.actualCombo.name;
     }
 
-    /* Create the panel that groups the image sequence of buttons */
-    void createInstructions( ){
+    /* Delete all the elements present in the CANVAS for the new
+        chord combo 
+    */
+    public void DestroyPanel( ){
         if ( newPanel != null){
-            /* Delete the previous elements of the combo sequence */
             Destroy (newPanel);
             for (int sequenceIdx = 0; sequenceIdx < buttons.Length; sequenceIdx++)
                 Destroy( buttons[sequenceIdx] );
         }
+        
+    }
+
+    /* Create the panel that groups the image sequence of buttons */
+    void createInstructions( ){
+        /* Delete the previous elements of the combo sequence */
+        DestroyPanel( );
         Debug.Log( _Chords.instrument );
         List<combo> _ComboData = _Combo.actualCombo.combo[_Chords.instrument];
         /* Create the panel that groups all the sequence icons*/

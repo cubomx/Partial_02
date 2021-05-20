@@ -123,7 +123,7 @@ public class Combo : MonoBehaviour
     }
     
     /* Restart the index of all the combos */
-    void RestartCombos ( ) {
+    public void RestartCombos ( ) {
         for( int idx = 0; idx < namesCombo.Count; idx++)
             comboSystems[namesCombo[idx]].index = 0;
     }
